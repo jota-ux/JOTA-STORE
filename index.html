@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Loja virtual de camisas JotaStore - encontre as melhores estampas cristãs e estilosas.">
+  <title>JotaStore - Sua Loja de Camisas Online</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+
+<body>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="container">
+      <div class="navebar">
+        <div class="logo">
+          <img src="assets/img/logo.png" alt="Logo JotaStore" width="350" height="125" />
+        </div>
+        <nav>
+          <ul id="MenuItens">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="empresa.html">Empresa</a></li>
+            <li><a href="contato.html">Contatos</a></li>
+            <li><a href="minha conta.html">Minha conta</a></li>
+          </ul>
+          <a href="carrinho.html">
+            <img src="assets/img/carrinho.png" alt="Carrinho" width="30" height="30" />
+            <span id="cart-count">0</span>
+          </a>
+        </nav>
+      </div>
+      <div class="linha">
+        <div class="col-2">
+          <h1>Escolha um novo<br>estilo de vida!</h1>
+          <a href="#produtos" class="btn">Mais informações &#8594;</a>
+          <p><br>Aqui você encontra as melhores e estilosas camisas cristãs do mercado</p>
+        </div>
+        <div class="col-2">
+          <img src="assets/img/banner-.png" alt="Banner" width="100" height="100"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUTOS -->
+  <div class="corpo-categorias" id="produtos">
+    <h2 class="titulo">Produtos em Destaque</h2>
+    <div class="linha">
+      <div class="col-4">
+        <img src="assets/img/eis me aqui.png" alt="Camisa Eis Me Aqui" loading="lazy" />
+        <h4>Camisa "Eis Me Aqui"</h4>
+        <p>R$ 89,90</p>
+        <button class="add-to-cart" data-name="Camisa Eis Me Aqui" data-price="89.90">Adicionar ao Carrinho</button>
+      </div>
+      <div class="col-4">
+        <img src="assets/img/marcos 16 15.png" alt="Camisa Marcos 16:15" loading="lazy" />
+        <h4>Camisa "Marcos 16:15"</h4>
+        <p>R$ 99,90</p>
+        <button class="add-to-cart" data-name="Camisa Marcos 16:15" data-price="99.90">Adicionar ao Carrinho</button>
+      </div>
+    </div>
+    <div class="linha">
+      <div class="col-4">
+        <img src="assets/img/moletom.png" alt="Moletom Jesus Loves You" loading="lazy" />
+        <h4>Moletom "Jesus Loves You"</h4>
+        <p>R$ 179,90</p>
+        <button class="add-to-cart" data-name="Moletom Jesus Loves You" data-price="179.90">Adicionar ao Carrinho</button>
+      </div>
+      <div class="col-4">
+        <img src="assets/img/Jesus is King.png" alt="Camisa Jesus is King" loading="lazy" />
+        <h4>Camisa "Jesus is King"</h4>
+        <p>R$ 79,90</p>
+        <button class="add-to-cart" data-name="Camisa Jesus is King" data-price="79.90">Adicionar ao Carrinho</button>
+      </div>
+      <div class="col-4">
+        <img src="assets/img/Camisa São Jorge.png" alt="Camisa São Jorge" loading="lazy" />
+        <h4>Camisa "São Jorge"</h4>
+        <p>R$ 89,90</p>
+        <button class="add-to-cart" data-name="Camisa São Jorge" data-price="89.90">Adicionar ao Carrinho</button>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- RODAPÉ -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 JotaStore. Todos os direitos reservados.</p>
+      <div class="social-media">
+        <a href="#"><ion-icon name="logo-facebook"></ion-icon></a>
+        <a href="#"><ion-icon name="logo-instagram"></ion-icon></a>
+        <a href="#"><ion-icon name="logo-twitter"></ion-icon></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ÍCONES -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+  <!-- FIREBASE + JS PRINCIPAL -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPNZPrfEszaMCqv0npefDd8tzmFyWlCMg",
+      authDomain: "jotastore-web.firebaseapp.com",
+      databaseURL: "https://jotastore-web-default-rtdb.firebaseio.com",
+      projectId: "jotastore-web",
+      storageBucket: "jotastore-web.appspot.com",
+      messagingSenderId: "575242667792",
+      appId: "1:575242667792:web:ef4e3ca41b116a3a230795",
+      measurementId: "G-G5PYBCK4D8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    class Carrinho {
+      constructor() {
+        this.itens = JSON.parse(localStorage.getItem("cart")) || [];
+        this.atualizarCarrinho();
+      }
+
+      adicionarProduto(nome, preco) {
+        let produto = this.itens.find(item => item.nome === nome);
+        if (produto) {
+          produto.quantidade++;
+        } else {
+          this.itens.push({ nome, preco, quantidade: 1 });
+        }
+
+        this.salvarCarrinho();
+        this.salvarNoFirebase(nome, preco);
+      }
+
+      salvarCarrinho() {
+        localStorage.setItem("cart", JSON.stringify(this.itens));
+        this.atualizarCarrinho();
+      }
+
+      atualizarCarrinho() {
+        const cartCount = document.getElementById("cart-count");
+        if (cartCount) {
+          cartCount.textContent = this.itens.reduce((total, item) => total + item.quantidade, 0);
+        }
+      }
+
+      salvarNoFirebase(nome, preco) {
+        push(ref(db, "carrinho"), {
+          nome,
+          preco,
+          quantidade: 1,
+          data: new Date().toISOString()
+        }).catch(error => {
+          console.error("Erro ao salvar no Firebase:", error);
+        });
+      }
+    }
+
+    const carrinho = new Carrinho();
+    const botoesAdicionar = document.querySelectorAll(".add-to-cart");
+
+    botoesAdicionar.forEach(botao => {
+      botao.addEventListener("click", function () {
+        const nome = this.getAttribute("data-name");
+        const preco = parseFloat(this.getAttribute("data-price"));
+        carrinho.adicionarProduto(nome, preco);
+      });
+    });
+
+    // Formulário de contato
+    document.getElementById("formContato").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const mensagem = document.getElementById("mensagem").value.trim();
+
+      if (nome && email && mensagem) {
+        push(ref(db, "contatos"), {
+          nome,
+          email,
+          mensagem,
+          data: new Date().toISOString()
+        })
+        .then(() => {
+          document.getElementById("respostaContato").textContent = "Mensagem enviada com sucesso!";
+          document.getElementById("formContato").reset();
+        })
+        .catch(error => {
+          document.getElementById("respostaContato").textContent = "Erro ao enviar mensagem.";
+          console.error(error);
+        });
+      } else {
+        document.getElementById("respostaContato").textContent = "Preencha todos os campos.";
+      }
+    });
+  </script>
+</body>
+</html>

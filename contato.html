@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contato - JotaStore</title>
+  <meta name="description" content="Entre em contato com a JotaStore. Tire dúvidas ou envie sugestões.">
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <div class="banner">
+    <div class="container">
+      <div class="navebar">
+        <div class="logo">
+          <a href="index.html">
+            <img src="assets/img/logo.png" alt="Logo JotaStore" width="350px" height="125px" />
+          </a>
+        </div>
+        <nav>
+          <ul id="MenuItens">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="empresa.html">Empresa</a></li>
+            <li><a href="contato.html">Contatos</a></li>
+            <li><a href="minha conta.html">Minha conta</a></li>
+          </ul>
+          <a href="carrinho.html">
+            <img src="assets/img/carrinho.png" alt="Carrinho" width="30px" />
+            <span id="cart-count">0</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <main class="contato-container">
+    <h2>Fale Conosco</h2>
+    <p>Preencha o formulário abaixo para entrar em contato com a equipe da JotaStore.</p>
+
+    <form id="formContato" novalidate>
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" required>
+
+      <label for="email">E-mail:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="mensagem">Mensagem:</label>
+      <textarea id="mensagem" name="mensagem" rows="6" required></textarea>
+
+      <button type="submit">Enviar</button>
+      <p id="form-feedback" style="color: red; margin-top: 10px;"></p>
+    </form>
+  </main>
+
+  <style>
+    .contato-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+      font-family: Arial, sans-serif;
+    }
+
+    .contato-container h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .contato-container p {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 12px;
+      background-color: #0077cc;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+
+  <script>
+    document.getElementById('formContato').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mensagem = document.getElementById('mensagem').value.trim();
+      const feedback = document.getElementById('form-feedback');
+
+      // Validação básica
+      if (!nome || !email || !mensagem) {
+        feedback.textContent = 'Por favor, preencha todos os campos.';
+        return;
+      }
+
+      // Validação de e-mail simples
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        feedback.textContent = 'Informe um e-mail válido.';
+        return;
+      }
+
+      // Validação da mensagem
+      if (mensagem.length < 10) {
+        feedback.textContent = 'A mensagem deve ter pelo menos 10 caracteres.';
+        return;
+      }
+
+      // Tudo certo
+      feedback.style.color = 'green';
+      feedback.textContent = 'Mensagem enviada com sucesso!';
+      
+      // Aqui você pode enviar os dados para um servidor com fetch ou usar mailto
+      // Exemplo com mailto:
+      window.location.href = `mailto:contato@jotastore.com?subject=Contato de ${nome}&body=${encodeURIComponent(mensagem + '\n\nDe: ' + nome + '\nEmail: ' + email)}`;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Produtos - JotaStore</title>
+  <meta name="description" content="Produtos cristãos estilosos da JotaStore. Confira nossa coleção!">
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<style>
+  .produtos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* menor */
+  gap: 15px;
+  padding: 20px;
+  text-align: center;
+}
+
+.produto {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px; /* reduzido */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 180px; /* controla o tamanho da "caixa" */
+  margin: auto; /* centraliza */
+}
+
+.produto img {
+  max-width: 140px; /* menor imagem */
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
+
+
+  .produto h3 {
+    margin: 25px 0;
+    font-size: 1.1em;
+  }
+
+  .produto p {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .produto button {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+  }
+
+  .produto button:hover {
+    background: #555;
+  }
+</style>
+
+<body>
+  <div class="banner">
+    <div class="container">
+      <div class="navebar">
+        <div class="logo">
+          <a href="index.html">
+            <img src="assets/img/logo.png" alt="Logo JotaStore" width="350px" height="125px" />
+          </a>
+        </div>
+        <nav>
+          <ul id="MenuItens">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="empresa.html">Empresa</a></li>
+            <li><a href="contato.html">Contatos</a></li>
+            <li><a href="minha conta.html">Minha conta</a></li>
+          </ul>
+          <a href="carrinho.html">
+            <img src="assets/img/carrinho.png" alt="Carrinho" width="30px" />
+            <span id="cart-count">0</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aba de Produtos -->
+  <div id="produtos" class="tab-content active">
+    <h2>Produtos</h2>
+    <div class="produtos-grid">
+      <div class="produto">
+        <h3>Moletom Jesus Loves You</h3>
+        <img src="assets/img/moletom.png" alt="Moletom Jesus Loves You" class="imagem-produto">
+        <p>R$ 179,90</p>
+        <button onclick="carrinho.adicionarProduto('Moletom Jesus Loves You', 179.90, 'assets/img/moletom.png')">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <h3>Camisa Eis me aqui</h3>
+        <img src="assets/img/eis me aqui.png" alt="Camisa eis me aqui" class="imagem-produto">
+        <p>R$ 89,90</p>
+        <button onclick="carrinho.adicionarProduto('Camisa eis me aqui', 89.90, 'assets/img/eis me aqui.png')">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <h3>Camisa Jesus is King</h3>
+        <img src="assets/img/Jesus is King.png" alt="Camisa Jesus is King" class="imagem-produto">
+        <p>R$ 79,90</p>
+        <button onclick="carrinho.adicionarProduto('Camisa Jesus is King', 79.90, 'assets/img/Jesus is King.png')">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <h3>Camisa marcos 16 15</h3>
+        <img src="assets/img/marcos 16 15.png" alt="Camisa marcos 16 15" class="imagem-produto">
+        <p>R$ 99,90</p>
+        <button onclick="carrinho.adicionarProduto('Camisa marcos 16 15', 99.90, 'assets/img/marcos 16 15.png')">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <h3>Camisa São Jorge</h3>
+        <img src="assets/img/Camisa São Jorge.png" alt="Camisa São Jorge" class="imagem-produto">
+        <p>R$ 89,90</p>
+        <button onclick="carrinho.adicionarProduto('Camisa São Jorge', 89.90, 'assets/img/Camisa São Jorge.png')">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class Carrinho {
+      constructor() {
+        this.itens = JSON.parse(localStorage.getItem("cart")) || [];
+        this.atualizarContador();
+      }
+
+      adicionarProduto(nome, preco, imagem) {
+        const existente = this.itens.find(item => item.nome === nome);
+        if (existente) {
+          existente.quantidade++;
+        } else {
+          this.itens.push({ nome, preco, imagem, quantidade: 1 });
+        }
+        this.salvarCarrinho();
+      }
+
+      salvarCarrinho() {
+        localStorage.setItem("cart", JSON.stringify(this.itens));
+        this.atualizarContador();
+      }
+
+      atualizarContador() {
+        const total = this.itens.reduce((soma, item) => soma + item.quantidade, 0);
+        document.getElementById("cart-count").textContent = total;
+      }
+    }
+
+    const carrinho = new Carrinho();
+  </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minha Conta - JotaStore</title>
+  <meta name="description" content="Acesse sua conta JotaStore ou cadastre-se.">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .container-conta {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .tabs-conta {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .tab-conta {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border-bottom: 2px solid transparent;
+      font-weight: bold;
+    }
+
+    .tab-conta.active {
+      border-bottom: 3px solid #333;
+      color: #333;
+    }
+
+    .form-conta {
+      display: none;
+    }
+
+    .form-conta.active {
+      display: block;
+    }
+
+    .form-conta input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-conta button {
+      width: 100%;
+      padding: 10px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-conta button:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho e Menu -->
+  <div class="banner">
+    <div class="container">
+      <div class="navebar">
+        <div class="logo">
+          <a href="index.html">
+            <img src="assets/img/logo.png" alt="Logo JotaStore" width="350px" height="125px" />
+          </a>
+        </div>
+        <nav>
+          <ul id="MenuItens">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="empresa.html">Empresa</a></li>
+            <li><a href="contato.html">Contatos</a></li>
+            <li><a href="minha conta.html">Minha conta</a></li>
+          </ul>
+          <a href="carrinho.html">
+            <img src="assets/img/carrinho.png" alt="Carrinho" width="30px" />
+            <span id="cart-count">0</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteúdo da Página -->
+  <div class="container-conta">
+    <div class="tabs-conta">
+      <div class="tab-conta active" onclick="trocarAba('login')">Login</div>
+      <div class="tab-conta" onclick="trocarAba('cadastro')">Cadastro</div>
+    </div>
+
+    <!-- Formulário de Login -->
+    <div id="form-login" class="form-conta active">
+      <form>
+        <label for="email-login">Email</label>
+        <input type="email" id="email-login" required>
+
+        <label for="senha-login">Senha</label>
+        <input type="password" id="senha-login" required>
+
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+
+    <!-- Formulário de Cadastro -->
+    <div id="form-cadastro" class="form-conta">
+      <form>
+        <label for="nome-cadastro">Nome completo</label>
+        <input type="text" id="nome-cadastro" required>
+
+        <label for="email-cadastro">Email</label>
+        <input type="email" id="email-cadastro" required>
+
+        <label for="senha-cadastro">Senha</label>
+        <input type="password" id="senha-cadastro" required>
+
+        <button type="submit">Cadastrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script de Abas -->
+  <script>
+    function trocarAba(aba) {
+      document.querySelectorAll('.tab-conta').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.form-conta').forEach(form => {
+        form.classList.remove('active');
+      });
+
+      if (aba === 'login') {
+        document.querySelector('.tab-conta:nth-child(1)').classList.add('active');
+        document.getElementById('form-login').classList.add('active');
+      } else {
+        document.querySelector('.tab-conta:nth-child(2)').classList.add('active');
+        document.getElementById('form-cadastro').classList.add('active');
+      }
+    }
+  </script>
+
+</body>
+</html>

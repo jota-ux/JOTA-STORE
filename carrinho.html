@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Carrinho de Compras - JotaStore">
+  <title>Carrinho - JotaStore</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .pagamento-btn {
+      margin: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      border: 2px solid #333;
+      border-radius: 5px;
+    }
+    .pagamento-btn.selecionado {
+      background-color: #333;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div class="container">
+      <div class="navebar">
+        <div class="logo">
+          <img src="assets/img/logo.png" alt="Logo JotaStore" width="350px" height="125px">
+        </div>
+        <nav>
+          <ul id="MenuItens">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="empresa.html">Empresa</a></li>
+            <li><a href="contato.html">Contatos</a></li>
+            <li><a href="minha conta.html">Minha conta</a></li>
+          </ul>
+          <a href="carrinho.html">
+            <img src="assets/img/carrinho.png" width="30px" height="30px">
+            <span id="cart-count">0</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div class="corpo-categorias">
+    <h2 class="titulo">Seu Carrinho de Compras</h2>
+    <div id="carrinhoContainer"></div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <label for="nomeCliente">Seu nome:</label><br>
+      <input type="text" id="nomeCliente" placeholder="Digite seu nome" style="padding: 8px; width: 250px;">
+    </div>
+
+    <div class="metodos-pagamento" style="text-align: center; margin-top: 20px;">
+      <h3>Selecione o método de pagamento:</h3>
+      <button class="pagamento-btn" data-metodo="Pix">Pix</button>
+      <button class="pagamento-btn" data-metodo="Cartão">Cartão</button>
+      <button class="pagamento-btn" data-metodo="Boleto">Boleto</button>
+      <p id="avisoPagamento" style="color: red; margin-top: 10px;"></p>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="btnFinalizarCompra" class="btn">Finalizar Compra</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPNZPrfEszaMCqv0npefDd8tzmFyWlCMg",
+      authDomain: "jotastore-web.firebaseapp.com",
+      databaseURL: "https://jotastore-web-default-rtdb.firebaseio.com",
+      projectId: "jotastore-web",
+      storageBucket: "jotastore-web.appspot.com",
+      messagingSenderId: "575242667792",
+      appId: "1:575242667792:web:ef4e3ca41b116a3a230795"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let metodoSelecionado = "";
+
+    const botoesPagamento = document.querySelectorAll(".pagamento-btn");
+    botoesPagamento.forEach(botao => {
+      botao.addEventListener("click", () => {
+        metodoSelecionado = botao.getAttribute("data-metodo");
+        botoesPagamento.forEach(b => b.classList.remove("selecionado"));
+        botao.classList.add("selecionado");
+      });
+    });
+
+    class Carrinho {
+      constructor() {
+        this.itens = JSON.parse(localStorage.getItem("cart")) || [];
+        this.atualizarCarrinho();
+      }
+
+      adicionarProduto(nome, preco, imagem) {
+        let produto = this.itens.find(item => item.nome === nome);
+        if (produto) {
+          produto.quantidade++;
+        } else {
+          this.itens.push({ nome, preco, quantidade: 1, imagem });
+        }
+        this.salvarCarrinho();
+      }
+
+      removerProduto(nome) {
+        this.itens = this.itens.filter(item => item.nome !== nome);
+        this.salvarCarrinho();
+      }
+
+      atualizarQuantidade(nome, quantidade) {
+        let produto = this.itens.find(item => item.nome === nome);
+        if (produto && quantidade > 0) {
+          produto.quantidade = quantidade;
+        } else {
+          this.removerProduto(nome);
+        }
+        this.salvarCarrinho();
+      }
+
+      salvarCarrinho() {
+        localStorage.setItem("cart", JSON.stringify(this.itens));
+        this.atualizarCarrinho();
+      }
+
+      limparCarrinho() {
+        this.itens = [];
+        this.salvarCarrinho();
+      }
+
+      atualizarCarrinho() {
+        const cartCount = document.getElementById("cart-count");
+        const carrinhoContainer = document.getElementById("carrinhoContainer");
+
+        cartCount.textContent = this.itens.reduce((total, item) => total + item.quantidade, 0);
+        carrinhoContainer.innerHTML = '';
+
+        if (this.itens.length === 0) {
+          carrinhoContainer.innerHTML = '<p>Seu carrinho está vazio.</p>';
+        } else {
+          this.itens.forEach(item => {
+            carrinhoContainer.innerHTML += `
+              <div class="item-carrinho">
+                <img src="${item.imagem}" class="imagem-produto" alt="${item.nome}">
+                <div class="info-produto">
+                  <h4>${item.nome}</h4>
+                  <p>Preço: R$ ${item.preco.toFixed(2)}</p>
+                  <p>Quantidade: 
+                    <input type="number" value="${item.quantidade}" min="1" data-nome="${item.nome}">
+                  </p>
+                  <p>Total: R$ ${(item.preco * item.quantidade).toFixed(2)}</p>
+                  <button class="remover-item" data-nome="${item.nome}">Remover</button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        document.querySelectorAll(".remover-item").forEach(btn => {
+          btn.addEventListener("click", e => {
+            const nome = e.target.getAttribute("data-nome");
+            this.removerProduto(nome);
+          });
+        });
+
+        document.querySelectorAll("input[type='number']").forEach(input => {
+          input.addEventListener("change", e => {
+            const nome = e.target.getAttribute("data-nome");
+            const quantidade = parseInt(e.target.value);
+            this.atualizarQuantidade(nome, quantidade);
+          });
+        });
+      }
+    }
+
+    const carrinho = new Carrinho();
+
+    document.getElementById("btnFinalizarCompra").addEventListener("click", () => {
+      const nomeCliente = document.getElementById("nomeCliente").value.trim();
+      const avisoPagamento = document.getElementById("avisoPagamento");
+
+      if (carrinho.itens.length === 0) {
+        alert("Seu carrinho está vazio!");
+        return;
+      }
+
+      if (!metodoSelecionado) {
+        avisoPagamento.textContent = "Selecione um método de pagamento antes de finalizar.";
+        return;
+      }
+
+      if (nomeCliente === "") {
+        alert("Digite seu nome para finalizar a compra.");
+        return;
+      }
+
+      avisoPagamento.textContent = "";
+
+      let totalCompra = 0;
+
+      carrinho.itens.forEach(item => {
+        totalCompra += item.preco * item.quantidade;
+        push(ref(db, `pedidosPorMetodo/${metodoSelecionado}`), {
+          nome: item.nome,
+          preco: item.preco,
+          quantidade: item.quantidade,
+          imagem: item.imagem,
+          metodoPagamento: metodoSelecionado,
+          nomeCliente: nomeCliente,
+          data: new Date().toISOString()
+        });
+      });
+
+      // Salva no localStorage para exibir na página de agradecimento
+      localStorage.setItem("dadosUltimaCompra", JSON.stringify({
+        nomeCliente,
+        metodoPagamento: metodoSelecionado,
+        total: totalCompra
+      }));
+
+      carrinho.limparCarrinho();
+      window.location.href = "obrigado.html";
+    });
+  </script>
+</body>
+</html>

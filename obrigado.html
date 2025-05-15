@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Obrigado pela compra - JotaStore</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="corpo-categorias" style="text-align: center;">
+    <h2>Obrigado pela sua compra!</h2>
+    <p id="mensagemCompra" style="font-size: 20px; margin-top: 20px;"></p>
+    <a href="index.html" class="btn" style="margin-top: 20px;">Voltar para a loja</a>
+  </div>
+
+  <script>
+    const dados = JSON.parse(localStorage.getItem("dadosUltimaCompra"));
+    if (dados) {
+      document.getElementById("mensagemCompra").textContent = `Obrigado, ${dados.nomeCliente}! Sua compra foi finalizada com sucesso via ${dados.metodoPagamento}. Total: R$ ${dados.total.toFixed(2)}.`;
+      localStorage.removeItem("dadosUltimaCompra");
+    } else {
+      document.getElementById("mensagemCompra").textContent = "Nenhuma informação de compra encontrada.";
+    }
+  </script>
+</body>
+</html>
